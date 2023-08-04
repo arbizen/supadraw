@@ -6,7 +6,7 @@ import Header from "@/components/builtIn/Header";
 export default function Home() {
   return (
     <div className="h-screen md:bg-[url(https://play.tailwindcss.com/img/grid.svg)] bg-center">
-      <div className="max-w-2xl h-full mx-auto py-12 bg-[url(https://play.tailwindcss.com/img/grid.svg) md:bg-white shadow-md px-12">
+      <div className="max-w-2xl h-full mx-auto p-6 bg-[url(https://play.tailwindcss.com/img/grid.svg) md:bg-white shadow-md md:p-12">
         <Header />
         <h1 className="pt-6 scroll-m-20 text-4xl font-extrabold leading-7 tracking-tight">
           Draw like an artist.
