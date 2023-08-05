@@ -37,7 +37,7 @@ export function Login() {
       email,
       password,
     });
-    router.refresh();
+    router.push("/app/drawings");
   };
 
   const handleGoogleSignIn = async () => {

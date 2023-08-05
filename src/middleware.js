@@ -9,7 +9,7 @@ export async function middleware(req) {
   const isAuthPage = req.nextUrl.pathname.startsWith("/login");
   if (isAuthPage) {
     if (isAuth) {
-      return NextResponse.redirect(new URL("/pad", req.url));
+      return NextResponse.redirect(new URL("/app/drawings", req.url));
     }
 
     return null;
@@ -27,5 +27,5 @@ export async function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/login", "/pad"],
+  matcher: ["/login", "/app", "/app/:path*"],
 };
