@@ -11,7 +11,7 @@ import {
 import Signout from "./Signout";
 import SidebarItems from "./SidebarItems";
 
-export const dyanmic = "force-dynamic";
+export const dynamic = "force-dynamic";
 
 export function SidebarHeader({ children }) {
   return <div className="min-h-[48px] w-full p-4">{children}</div>;
