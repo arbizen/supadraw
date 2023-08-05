@@ -8,7 +8,7 @@ export default function SidebarItems({ items }) {
   const pathname = usePathname();
   console.log();
   return (
-    <div className="border-t border-b p-4 space-y-2">
+    <div className="border-t border-b p-4 py-6 space-y-2">
       {items &&
         items.map((item, i) => (
           <Link key={i} href={item.pathname} className="block">

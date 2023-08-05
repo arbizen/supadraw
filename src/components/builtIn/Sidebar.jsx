@@ -2,7 +2,13 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
-import { ChevronDown, LayoutDashboard, Search, Share } from "lucide-react";
+import {
+  Bookmark,
+  ChevronDown,
+  LayoutDashboard,
+  Search,
+  Share,
+} from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
@@ -30,6 +36,11 @@ export default async function Sidebar() {
       name: "Discover",
       icon: <Search size={15} />,
       pathname: "/app/discover",
+    },
+    {
+      name: "Bookmarks",
+      icon: <Bookmark size={15} />,
+      pathname: "/app/bookmarks",
     },
   ];
   //console.log(data.user);
