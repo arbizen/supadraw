@@ -3,7 +3,12 @@ import Published from "@/components/builtIn/Published";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pen, Upload } from "lucide-react";
 
-export default function DrawingPage() {
+export default async function DrawingPage() {
+  const wait = await new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, 3000);
+  });
   return (
     <div className="p-4">
       <div className="flex gap-4">
