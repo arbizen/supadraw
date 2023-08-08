@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Eraser, Grab, Pencil, Share2, Trash } from "lucide-react";
+import {
+  ChevronLeft,
+  Eraser,
+  Grab,
+  Pencil,
+  Save,
+  Share2,
+  Trash,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import {
   HoverCard,
@@ -15,12 +23,13 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import Link from "next/link";
+import { saveAs } from "file-saver";
 
 const Drawer = dynamic(() => import("@/components/builtIn/Drawer"), {
   ssr: false,
 });
 
-export default function DrawingPad() {
+export default function DrawingPad({ pageId }) {
   const containerRef = useRef(null);
   const router = useRouter();
   const [size, setSize] = useState({
@@ -76,15 +85,17 @@ export default function DrawingPad() {
       <>
         <div className="flex items-center absolute top-10 z-20 left-1/2 -translate-x-1/2 rounded-md border-2 shadow bg-white md:min-w-[400px]">
           <p className="text-sm font-medium flex-1 pl-5 flex items-center gap-2">
-            <Link href="/app/drawings">
-              <button
-                className={cn(
-                  "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer"
-                )}
-              >
-                <ChevronLeft className="w-5 h-5 text-black" />
-              </button>
-            </Link>
+            <button
+              onClick={() => {
+                router.push("/app/drawings");
+                router.refresh();
+              }}
+              className={cn(
+                "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer"
+              )}
+            >
+              <ChevronLeft className="w-5 h-5 text-black" />
+            </button>
             untitled1
           </p>
           <div className="flex  w-fit gap-5 pr-5 py-1 ">
@@ -151,6 +162,16 @@ export default function DrawingPad() {
                     >
                       Publish
                     </Button>
+                    <Button
+                      onClick={() => {
+                        if (url) {
+                          saveAs(url, "download.jpg");
+                        }
+                      }}
+                      className="ml-2"
+                    >
+                      Download
+                    </Button>
                   </>
                 )}
               </HoverCardContent>
@@ -166,6 +187,7 @@ export default function DrawingPad() {
         loading={loading}
         valid={valid}
         getPreview={(url) => setUrl(url)}
+        pageId={pageId}
       />
     </div>
   );

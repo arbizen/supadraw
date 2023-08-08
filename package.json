@@ -25,6 +25,7 @@
     "autoprefixer": "10.4.14",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "file-saver": "^2.0.5",
     "konva": "^9.2.0",
     "lucide-react": "^0.263.1",
     "next": "13.4.12",
@@ -37,6 +38,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.6",
+    "uuid": "^9.0.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {

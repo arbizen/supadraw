@@ -4,12 +4,14 @@
 
 import { Stage, Layer, Line } from "react-konva";
 import React, { useState, useRef, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export default function Drawer({ getPreview, ...props }) {
   //DRAW
   const [lines, setLines] = useState([]);
   const [lastCenter, setlastCenter] = useState(null);
   const [lastDistance, setlastDistance] = useState(null);
+  const supabase = createClientComponentClient();
 
   const isDrawing = useRef(false);
 
@@ -19,9 +21,38 @@ export default function Drawer({ getPreview, ...props }) {
   // GENERTE LIVE PREVIEW
   function generatePreview() {
     if (mainStage) {
-      const scale = 1 / 2;
+      const scale = 1;
       const url = mainStage.toDataURL({ pixelRatio: scale });
       return url;
+    }
+  }
+
+  async function updateDrawingToDB() {
+    const { data } = await supabase.auth.getUser();
+    const { data: drawing } = await supabase
+      .from("drawings")
+      .select()
+      .eq("drawing_id", props.pageId);
+    if (drawing.length == 0) {
+      const drawingData = {
+        name: "untitled1",
+        user_id: data.user.id,
+        by: data.user.user_metadata.full_name,
+        drawing_id: props.pageId,
+        preview_data: generatePreview(),
+        type: "draft",
+      };
+      const { error } = await supabase.from("drawings").insert(drawingData);
+      if (error) {
+        console.log(`SOMETHING WENT WRONG WHILE SAVING THE DRAWING!`, error);
+      }
+      console.log("added");
+    } else {
+      await supabase
+        .from("drawings")
+        .update({ preview_data: generatePreview() })
+        .eq("drawing_id", props.pageId);
+      console.log("updated");
     }
   }
 
@@ -57,6 +88,9 @@ export default function Drawer({ getPreview, ...props }) {
     isDrawing.current = false;
     const url = generatePreview();
     getPreview && getPreview(url);
+    if (url) {
+      updateDrawingToDB();
+    }
   }
 
   function handleZoom(e) {

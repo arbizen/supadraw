@@ -23,17 +23,13 @@ import { useToast } from "../ui/use-toast";
 export default function Drawing({ data }) {
   const name = data?.name || "untitled";
   const isPublished = data?.isPublished || false;
+  const previewData = data?.preview_data || "/images/doll-sketch.jpg";
   const { toast } = useToast();
   return (
     <Card className="w-full md:max-w-[280px]">
       <CardContent className="space-y-3">
         <Link href="#" className="flex justify-center mt-4">
-          <Image
-            src="/images/doll-sketch.jpg"
-            alt=""
-            height={200}
-            width={200}
-          />
+          <Image src={previewData} alt="" height={200} width={200} />
         </Link>
         <Separator orientation="horizontal" />
         <div className="flex justify-between items-center gap-2">
