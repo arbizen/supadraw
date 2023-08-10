@@ -5,13 +5,15 @@
 import { Stage, Layer, Line } from "react-konva";
 import React, { useState, useRef, useEffect } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import CanvasImage from "./CanvasImage";
 
-export default function Drawer({ getPreview, ...props }) {
+export default function Drawer({ getPreview, drawingData, ...props }) {
   //DRAW
   const [lines, setLines] = useState([]);
   const [lastCenter, setlastCenter] = useState(null);
   const [lastDistance, setlastDistance] = useState(null);
   const supabase = createClientComponentClient();
+  const preview_data = drawingData?.preview_data;
 
   const isDrawing = useRef(false);
 
@@ -234,6 +236,7 @@ export default function Drawer({ getPreview, ...props }) {
         onWheel={handleZoom}
       >
         <Layer>
+          {preview_data && <CanvasImage url={preview_data} />}
           {lines.map((line, i) => (
             <Line
               key={i}

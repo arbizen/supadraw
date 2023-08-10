@@ -29,7 +29,7 @@ const Drawer = dynamic(() => import("@/components/builtIn/Drawer"), {
   ssr: false,
 });
 
-export default function DrawingPad({ pageId }) {
+export default function DrawingPad({ pageId, drawingData }) {
   const containerRef = useRef(null);
   const router = useRouter();
   const [size, setSize] = useState({
@@ -188,6 +188,7 @@ export default function DrawingPad({ pageId }) {
         valid={valid}
         getPreview={(url) => setUrl(url)}
         pageId={pageId}
+        drawingData={drawingData}
       />
     </div>
   );

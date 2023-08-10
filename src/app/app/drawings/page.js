@@ -16,6 +16,7 @@ export default async function DrawingPage() {
     .select()
     .eq("user_id", userData.user.id);
   const dratfs = data.filter((drawing) => drawing.type === "draft");
+  const published = data.filter((drawing) => drawing.type === "published");
   return (
     <div className="p-4">
       <div className="flex gap-4">
@@ -41,7 +42,7 @@ export default async function DrawingPage() {
             <Dratfs data={dratfs} />
           </TabsContent>
           <TabsContent value="published">
-            <Published />
+            <Published data={published} />
           </TabsContent>
         </Tabs>
       </div>
