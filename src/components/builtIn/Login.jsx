@@ -14,29 +14,54 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Info, Loader2Icon } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const schema = z.object({
+  email: z
+    .string()
+    .nonempty("Please type your valid email.")
+    .email({ message: "Please type a valid email." }),
+  password: z.string().nonempty("Please type your password."),
+});
 
 export function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPass] = useState("");
   const supabase = createClientComponentClient();
   const router = useRouter();
   const [isLoading, setIsloading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSignup = async () => {
-    await supabase.auth.signUp({
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const handleSignup = async ({ email, password }) => {
+    const { error, data } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
     });
+    console.log(data, error);
   };
 
-  const handleLogin = async () => {
-    await supabase.auth.signInWithPassword({
+  const handleLogin = async ({ email, password }) => {
+    setIsloading(true);
+    const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    if (error && error.status === 400) {
+      setErrorMessage("Invalid login credentials.");
+      setIsloading(false);
+      return;
+    }
     router.push("/app/drawings");
   };
 
@@ -58,13 +83,12 @@ export function Login() {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    handleLogin();
+  const onSubmit = async (value) => {
+    handleLogin(value);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 py-6">
+    <div className="space-y-4 py-6">
       <div>
         <CardTitle className="text-2xl">Login to draw</CardTitle>
         <CardDescription>Enter your email below to login</CardDescription>
@@ -89,34 +113,48 @@ export function Login() {
           </span>
         </div>
       </div>
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          onChange={(e) => setEmail(e.target.value)}
-          id="email"
-          type="email"
-          name="email"
-          placeholder="m@example.com"
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="password">Password</Label>
-        <Input
-          onChange={(e) => setPass(e.target.value)}
-          id="password"
-          name="password"
-          type="password"
-        />
-      </div>
-      <Button
-        onClick={() => {
-          setIsloading(true);
-        }}
-        className="w-full flex gap-2"
-      >
-        {isLoading && <Loader2Icon size={18} className="animate-spin" />}
-        Login
-      </Button>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="m@example.com"
+            {...register("email")}
+          />
+        </div>
+        {errors?.email?.message && (
+          <p className="text-sm text-red-500">{errors?.email?.message}</p>
+        )}
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Enter your password"
+            {...register("password")}
+          />
+        </div>
+        {errors?.password?.message && (
+          <p className="text-sm text-red-500">{errors?.password?.message}</p>
+        )}
+        <Button
+          disabled={isLoading}
+          type="submit"
+          className="w-full flex gap-2"
+        >
+          {isLoading ? (
+            <>
+              <Loader2Icon size={18} className="animate-spin" /> Logging...
+            </>
+          ) : (
+            "Login"
+          )}
+        </Button>
+      </form>
       <div className="py-2">
         <Card className="p-4 flex gap-2 items-center">
           <Info size={15} className="text-card-foreground" />
@@ -125,6 +163,6 @@ export function Login() {
           </p>
         </Card>
       </div>
-    </form>
+    </div>
   );
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { usePathname } from "next/navigation";
+import { SheetClose } from "../ui/sheet";
 
 export default function SidebarItems({ items }) {
   const pathname = usePathname();
