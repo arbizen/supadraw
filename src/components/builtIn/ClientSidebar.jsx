@@ -1,4 +1,5 @@
 "use clinet";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -7,15 +8,10 @@ import {
   LayoutDashboard,
   Search,
   Settings2,
-  Share,
 } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
 import Signout from "./Signout";
 import SidebarItems from "./SidebarItems";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function SidebarHeader({ children }) {
   return <div className="min-h-[48px] w-full p-4">{children}</div>;
@@ -27,28 +23,32 @@ export default function ClientSidebar({ data }) {
       name: "Drawings",
       icon: <LayoutDashboard size={15} />,
       pathname: "/app/drawings",
+      disabled: false,
     },
     {
       name: "Discover",
       icon: <Search size={15} />,
       pathname: "/app/discover",
+      disabled: false,
     },
     {
       name: "Bookmarks",
       icon: <Bookmark size={15} />,
       pathname: "/app/bookmarks",
+      disabled: false,
     },
     {
       name: "Settings",
       icon: <Settings2 size={15} />,
       pathname: "/app/settings",
+      disabled: true,
     },
   ];
   return (
     <>
       <SidebarHeader>
-        <HoverCard>
-          <HoverCardTrigger asChild>
+        <Popover>
+          <PopoverTrigger asChild>
             <Button variant="outline" className="flex gap-2 p-4" size="lg">
               <Avatar className="h-8 w-8 text-sm">
                 <AvatarImage src={data.user?.user_metadata.avatar_url} />
@@ -61,8 +61,8 @@ export default function ClientSidebar({ data }) {
               <p>{data.user?.user_metadata.full_name}</p>
               <ChevronDown size={15} />
             </Button>
-          </HoverCardTrigger>
-          <HoverCardContent>
+          </PopoverTrigger>
+          <PopoverContent>
             <div className="flex flex-col items-center w-full">
               <Avatar>
                 <AvatarImage src={data.user?.user_metadata.avatar_url} />
@@ -82,8 +82,8 @@ export default function ClientSidebar({ data }) {
             <div className="w-full border-t mt-4">
               <Signout className="w-full" />
             </div>
-          </HoverCardContent>
-        </HoverCard>
+          </PopoverContent>
+        </Popover>
       </SidebarHeader>
       <div className="mt-6">
         <SidebarItems items={items} />

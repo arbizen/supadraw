@@ -17,9 +17,18 @@ export default function Signout({ className }) {
   };
   return (
     <div className="py-6">
-      <Button onClick={signout} className={cn("flex gap-2", className)}>
-        {isLoading && <Loader2 size={18} className="animate-spin" />}
-        Signout
+      <Button
+        disabled={isLoading}
+        onClick={signout}
+        className={cn("flex gap-2", className)}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 size={18} className="animate-spin" /> Singing out...
+          </>
+        ) : (
+          "Signout"
+        )}
       </Button>
     </div>
   );

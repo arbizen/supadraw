@@ -17,6 +17,7 @@ import { Info, Loader2Icon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import SubmitButton from "./SubmitButton";
 
 const schema = z.object({
   email: z
@@ -31,6 +32,8 @@ export function Login() {
   const router = useRouter();
   const [isLoading, setIsloading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLogin, setIsLogin] = useState(true);
+  const [info, setInfo] = useState("");
 
   const {
     handleSubmit,
@@ -41,6 +44,7 @@ export function Login() {
   });
 
   const handleSignup = async ({ email, password }) => {
+    setIsloading(true);
     const { error, data } = await supabase.auth.signUp({
       email,
       password,
@@ -48,17 +52,25 @@ export function Login() {
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
     });
+    if (error) {
+      setErrorMessage(error?.message);
+      setIsloading(false);
+      return;
+    }
+    setInfo("Please check your email to confirm.");
+    setIsloading(false);
     console.log(data, error);
   };
 
   const handleLogin = async ({ email, password }) => {
     setIsloading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    console.log(data, error?.message);
     if (error && error.status === 400) {
-      setErrorMessage("Invalid login credentials.");
+      setErrorMessage(error?.message);
       setIsloading(false);
       return;
     }
@@ -84,14 +96,27 @@ export function Login() {
   };
 
   const onSubmit = async (value) => {
-    handleLogin(value);
+    if (isLogin) {
+      handleLogin(value);
+    } else {
+      handleSignup(value);
+    }
+  };
+
+  const clearMessages = () => {
+    setErrorMessage("");
+    setInfo("");
   };
 
   return (
     <div className="space-y-4 py-6">
       <div>
-        <CardTitle className="text-2xl">Login to draw</CardTitle>
-        <CardDescription>Enter your email below to login</CardDescription>
+        <CardTitle className="text-2xl">
+          {isLogin ? "Login" : "Register"} to draw
+        </CardTitle>
+        <CardDescription>
+          Enter your email below to {isLogin ? "login" : "register"}
+        </CardDescription>
       </div>
       <div className="grid grid-cols-2 gap-6">
         <Button onClick={handleGithubSignIn} variant="outline">
@@ -115,6 +140,7 @@ export function Login() {
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
+        {info && <p className="text-sm text-green-500">{info}</p>}
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -141,26 +167,40 @@ export function Login() {
         {errors?.password?.message && (
           <p className="text-sm text-red-500">{errors?.password?.message}</p>
         )}
-        <Button
-          disabled={isLoading}
-          type="submit"
-          className="w-full flex gap-2"
-        >
-          {isLoading ? (
-            <>
-              <Loader2Icon size={18} className="animate-spin" /> Logging...
-            </>
-          ) : (
-            "Login"
-          )}
-        </Button>
+        <SubmitButton isLoading={isLoading} isLogin={isLogin} />
       </form>
       <div className="py-2">
         <Card className="p-4 flex gap-2 items-center">
           <Info size={15} className="text-card-foreground" />
-          <p className="text-sm text-card-foreground">
-            An account will be created if you haven't yet.
-          </p>
+          <div className="text-sm text-card-foreground">
+            {isLogin ? (
+              <p>
+                Don't have an account?{" "}
+                <span
+                  onClick={() => {
+                    setIsLogin(false);
+                    clearMessages();
+                  }}
+                  className="underline cursor-pointer"
+                >
+                  Click here to register.
+                </span>
+              </p>
+            ) : (
+              <p>
+                Already have an account?{" "}
+                <span
+                  onClick={() => {
+                    setIsLogin(true);
+                    clearMessages();
+                  }}
+                  className="underline cursor-pointer"
+                >
+                  Click here to login.
+                </span>
+              </p>
+            )}
+          </div>
         </Card>
       </div>
     </div>

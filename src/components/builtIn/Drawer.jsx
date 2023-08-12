@@ -37,7 +37,7 @@ export default function Drawer({ getPreview, drawingData, ...props }) {
       .eq("drawing_id", props.pageId);
     if (drawing.length == 0) {
       const drawingData = {
-        name: "untitled1",
+        name: "untitled",
         user_id: data.user.id,
         by: data.user.user_metadata.full_name,
         drawing_id: props.pageId,

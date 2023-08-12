@@ -6,45 +6,63 @@ import Link from "next/link";
 import { Dot, Heart } from "lucide-react";
 import { Separator } from "../ui/separator";
 import { useToast } from "../ui/use-toast";
+import { formatTimeAgo } from "@/lib/formatTimeAgo";
 
 export default function SharedDrawing({ data }) {
-  const name = data?.name || "My fairy queen";
-  const isPublished = data?.isPublished || false;
+  const name = data?.name || "untitled";
+  const previewData = data?.preview_data || "/images/doll-sketch.jpg";
+  const id = data?.id;
+  const drawing_id = data?.drawing_id;
+  const by = data?.by;
+  const created_at = data?.created_at;
   const { toast } = useToast();
-  return (
-    <Card className="w-full md:max-w-[280px]">
-      <CardContent className="space-y-3">
-        <Link href="#" className="flex justify-center mt-4">
-          <Image
-            src="/images/doll-sketch.jpg"
-            alt=""
-            height={200}
-            width={200}
-          />
-        </Link>
-        <Separator orientation="horizontal" />
-        <div className="flex justify-between items-center gap-2">
-          <div className="flex flex-col gap-1">
-            <p className="font-medium text-base flex-1 truncate">{name}</p>
-            <p className="text-sm text-muted-foreground">by Arb</p>
+  if (name && by && created_at && previewData)
+    return (
+      <Card className="w-full md:min-w-[280px]">
+        <CardContent className="space-y-3">
+          <Link href="#" className="flex justify-center mt-4">
+            <Image
+              src={previewData}
+              className="h-[200px] w-auto"
+              alt=""
+              height={200}
+              width={200}
+            />
+          </Link>
+          <Separator orientation="horizontal" />
+          <div className="flex justify-between items-center gap-2">
+            <div className="flex flex-col gap-1">
+              <p className="font-medium text-base flex-1 truncate">{name}</p>
+              <p className="text-sm text-muted-foreground truncate">by {by}</p>
+            </div>
+            <Heart
+              onClick={() => {
+                toast({
+                  description: "You loved the drawing.",
+                });
+              }}
+              className="cursor-pointer"
+              size={18}
+            />
           </div>
-          <Heart
-            onClick={() => {
-              toast({
-                description: "You loved the drawing.",
-              });
-            }}
-            className="cursor-pointer"
-            size={18}
-          />
-        </div>
-        <Separator orientation="horizontal" />
-        <div className="flex items-center gap-1">
-          <p className="text-sm text-muted-foreground">120 likes</p>
-          <Dot size={15} />
-          <p className="text-sm text-muted-foreground">2 days ago</p>
-        </div>
-      </CardContent>
-    </Card>
-  );
+          <Separator orientation="horizontal" />
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-muted-foreground">120 likes</p>
+            <Dot size={15} />
+            <p className="text-sm text-muted-foreground">
+              {formatTimeAgo(created_at)}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  else {
+    return (
+      <Card className="w-full min-h-[200px] md:max-w-[280px] flex items-center justify-center p-6">
+        <p className="text-sm text-muted-foreground pl-4 border-l-2">
+          This drawing was deleted by the owner.
+        </p>
+      </Card>
+    );
+  }
 }

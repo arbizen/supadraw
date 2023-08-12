@@ -2,28 +2,27 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import {
-  ChevronLeft,
-  Eraser,
-  Grab,
-  Pencil,
-  Save,
-  Share2,
-  Trash,
-} from "lucide-react";
+import { ChevronLeft, Eraser, Grab, Pencil, Share2 } from "lucide-react";
 import dynamic from "next/dynamic";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import Link from "next/link";
 import { saveAs } from "file-saver";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+const schema = z.object({
+  name: z
+    .string()
+    .nonempty("Please enter a name.")
+    .min(3, { message: "Name must be more than 3 chars." }),
+});
 
 const Drawer = dynamic(() => import("@/components/builtIn/Drawer"), {
   ssr: false,
@@ -32,6 +31,7 @@ const Drawer = dynamic(() => import("@/components/builtIn/Drawer"), {
 export default function DrawingPad({ pageId, drawingData }) {
   const containerRef = useRef(null);
   const router = useRouter();
+  const supabase = createClientComponentClient();
   const [size, setSize] = useState({
     width: 0,
     height: 0,
@@ -41,6 +41,13 @@ export default function DrawingPad({ pageId, drawingData }) {
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const [url, setUrl] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   useEffect(() => {
     if (containerRef.current) {
@@ -61,6 +68,16 @@ export default function DrawingPad({ pageId, drawingData }) {
   }
 
   const { toast } = useToast();
+
+  const handleShare = async (value) => {
+    await supabase
+      .from("drawings")
+      .update({ name: value.name, type: "published" })
+      .eq("drawing_id", pageId);
+    toast({
+      description: "Drawing published.",
+    });
+  };
 
   return (
     <div
@@ -96,7 +113,7 @@ export default function DrawingPad({ pageId, drawingData }) {
             >
               <ChevronLeft className="w-5 h-5 text-black" />
             </button>
-            untitled1
+            untitled
           </p>
           <div className="flex  w-fit gap-5 pr-5 py-1 ">
             <button
@@ -126,8 +143,8 @@ export default function DrawingPad({ pageId, drawingData }) {
             >
               <Eraser className="w-5 h-5 text-black" />
             </button>
-            <HoverCard>
-              <HoverCardTrigger asChild>
+            <Popover>
+              <PopoverTrigger asChild>
                 <button
                   className={cn(
                     "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer"
@@ -135,17 +152,33 @@ export default function DrawingPad({ pageId, drawingData }) {
                 >
                   <Share2 className="w-5 h-5 text-black" />
                 </button>
-              </HoverCardTrigger>
-              <HoverCardContent className="space-y-4">
+              </PopoverTrigger>
+              <PopoverContent className="space-y-4">
                 <h3 className="text-base font-bold">Share</h3>
                 {url ? (
-                  <Image
-                    src={url}
-                    alt="drawing"
-                    height={200}
-                    width={200}
-                    className="h-auto w-auto border rounded-md"
-                  />
+                  <>
+                    <div className="mt-4 space-y-2">
+                      <Label htmlFor="drawing-name">Name</Label>
+                      <Input
+                        {...register("name")}
+                        type="text"
+                        id="drawing-name"
+                        placeholder="Drawing name"
+                      />
+                      {errors?.name?.message && (
+                        <p className="text-sm text-red-500">
+                          {errors?.name?.message}
+                        </p>
+                      )}
+                    </div>
+                    <Image
+                      src={url}
+                      alt="drawing"
+                      height={200}
+                      width={200}
+                      className="h-auto w-auto border rounded-md"
+                    />
+                  </>
                 ) : (
                   <p className="text-sm text-muted-foreground">
                     Please draw something first.
@@ -153,15 +186,7 @@ export default function DrawingPad({ pageId, drawingData }) {
                 )}
                 {url && (
                   <>
-                    <Button
-                      onClick={() => {
-                        toast({
-                          description: "Drawing published!",
-                        });
-                      }}
-                    >
-                      Publish
-                    </Button>
+                    <Button onClick={handleSubmit(handleShare)}>Publish</Button>
                     <Button
                       onClick={() => {
                         if (url) {
@@ -174,8 +199,8 @@ export default function DrawingPad({ pageId, drawingData }) {
                     </Button>
                   </>
                 )}
-              </HoverCardContent>
-            </HoverCard>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </>

@@ -35,7 +35,7 @@ export default function AppHeader() {
       </Sheet>
       <p className="font-bold">{HeaderTitle}</p>
       <div className="flex-1 flex justify-end items-center">
-        <Button size="sm" variant="outline">
+        <Button disabled={true} size="sm" variant="outline">
           <Moon size={20} />
         </Button>
       </div>

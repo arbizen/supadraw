@@ -8,7 +8,6 @@ export default async function DrawingPadPage({ params }) {
     .from("drawings")
     .select()
     .eq("drawing_id", params.id);
-  console.log(`DRAWING DATA FROM SINGLE PAGE: `, data);
   const drawingData = data[0];
   return <DrawingPad drawingData={drawingData} pageId={params.id} />;
 }

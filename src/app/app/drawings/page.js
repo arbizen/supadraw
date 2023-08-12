@@ -27,7 +27,7 @@ export default async function DrawingPage() {
           <Pen size={15} />
           New drawing
         </Link>
-        <div className="inline-flex gap-2 h-10 w-auto px-4 md:h-16 md:w-60 cursor-pointer justify-center items-center md:font-medium text-sm text-accent-foreground border rounded-md hover:bg-accent hover:text-accent-foreground">
+        <div className="inline-flex gap-2 h-10 w-auto px-4 md:h-16 md:w-60 cursor-not-allowed justify-center items-center md:font-medium text-sm text-slate-300 border border-slate-100 rounded-md">
           <Upload size={15} />
           Upload drawing
         </div>

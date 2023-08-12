@@ -3,7 +3,14 @@
 import Image from "next/image";
 import { Card, CardContent } from "../ui/card";
 import Link from "next/link";
-import { Bookmark, Dot, MoreVertical, Trash } from "lucide-react";
+import {
+  Bookmark,
+  Dot,
+  Forward,
+  MoreVertical,
+  Trash,
+  Undo,
+} from "lucide-react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -21,14 +28,15 @@ import { Close as PopoverClose } from "@radix-ui/react-popover";
 import { useToast } from "../ui/use-toast";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
+import { formatTimeAgo } from "@/lib/formatTimeAgo";
 
 export default function Drawing({ data }) {
   const name = data?.name || "untitled";
-  const isPublished = data?.isPublished || false;
   const previewData = data?.preview_data || "/images/doll-sketch.jpg";
   const id = data?.id;
   const drawing_id = data?.drawing_id;
   const type = data?.type;
+  const created_at = data?.created_at;
   const supabase = createClientComponentClient();
   const router = useRouter();
 
@@ -69,14 +77,14 @@ export default function Drawing({ data }) {
 
   const { toast } = useToast();
   return (
-    <Card className="w-full md:max-w-[280px]">
+    <Card className="w-full md:min-w-[280px]">
       <CardContent className="space-y-3 flex flex-col">
         <Link href={`/pad/${drawing_id}`} className="flex justify-center mt-4">
           <Image
             src={previewData}
             alt=""
-            className="h-[200px] w-[200px]"
-            height={200}
+            className="h-[200px] w-auto"
+            height={400}
             width={200}
           />
         </Link>
@@ -94,7 +102,7 @@ export default function Drawing({ data }) {
                     onClick={handlePublish}
                     className="flex gap-2 items-center hover:bg-[#eee] px-2 py-1 rounded-md cursor-pointer"
                   >
-                    <Bookmark size={15} />
+                    <Forward size={15} />
                     Publish
                   </div>
                 </PopoverClose>
@@ -105,7 +113,7 @@ export default function Drawing({ data }) {
                     onClick={handleUnpublish}
                     className="flex gap-2 items-center hover:bg-[#eee] px-2 py-1 rounded-md cursor-pointer"
                   >
-                    <Bookmark size={15} />
+                    <Undo size={15} />
                     Unpublish
                   </div>
                 </PopoverClose>
@@ -152,10 +160,12 @@ export default function Drawing({ data }) {
         <Separator orientation="horizontal" />
         <div className="flex items-center gap-1">
           <p className="text-sm text-muted-foreground">
-            {isPublished ? "Published" : "In Draft"}
+            {type !== "draft" ? "Published" : "In Draft"}
           </p>
           <Dot size={15} />
-          <p className="text-sm text-muted-foreground">2 days ago</p>
+          <p className="text-sm text-muted-foreground">
+            {formatTimeAgo(created_at)}
+          </p>
         </div>
       </CardContent>
     </Card>
