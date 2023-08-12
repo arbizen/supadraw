@@ -173,10 +173,10 @@ export default function DrawingPad({ pageId, drawingData }) {
                     </div>
                     <Image
                       src={url}
-                      alt="drawing"
-                      height={200}
+                      alt=""
+                      className="h-[200px] w-auto"
+                      height={400}
                       width={200}
-                      className="h-auto w-auto border rounded-md"
                     />
                   </>
                 ) : (
