@@ -15,7 +15,7 @@ export const metadata = {
     type: "website",
   },
   twitter: {
-    title: "Arb",
+    title: "Supadraw",
     card: "summary_large_image",
   },
   themeColor: "#000000",
