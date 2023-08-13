@@ -3,6 +3,24 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/builtIn/Header";
 
+export const metadata = {
+  title: "Supadraw",
+  description: "Draw like an artist.",
+  openGraph: {
+    title: "Supadraw",
+    description: "Draw like an artist.",
+    url: "https://supadraw.arbizen.com",
+    siteName: "Arb Rahim Badsa",
+    locale: "en-US",
+    type: "website",
+  },
+  twitter: {
+    title: "Arb",
+    card: "summary_large_image",
+  },
+  themeColor: "#000000",
+};
+
 export default function Home() {
   return (
     <div className="h-screen md:bg-[url(https://play.tailwindcss.com/img/grid.svg)] bg-center">
@@ -12,15 +30,16 @@ export default function Home() {
           Draw like an artist.
         </h1>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Feature-riched drawing pad, stunning colors, blazing fast brushes.
-          Sketch your dream and share with millions.
+          An online drawing tool to create and share your original drawing or
+          art. Engage with what others are drawing and live a vivid artistic
+          life on Supadraw.
         </p>
         <div className="py-6 flex gap-2">
           <Link href="/login">
             <Button>Start drawing</Button>
           </Link>
           <Link href="#">
-            <Button variant="outline">Explore</Button>
+            <Button variant="outline">Features</Button>
           </Link>
         </div>
         <div className="mt-6 flex items-center gap-2">

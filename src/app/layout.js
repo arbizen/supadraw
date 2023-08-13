@@ -7,8 +7,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Supadraw",
-  description: "Draw like never before",
+  title: "Supadraw | Draw like an artist",
+  description:
+    "An online drawing tool to create and share your original drawing or art. Engage with what others are drawing and live a vivid artistic life on Supadraw.",
 };
 
 export default function RootLayout({ children }) {

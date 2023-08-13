@@ -41,6 +41,8 @@ export default function DrawingPad({ pageId, drawingData }) {
   const [loading, setLoading] = useState(false);
   const [valid, setValid] = useState(true);
   const [url, setUrl] = useState("");
+  const [name, setName] = useState("...");
+
   const {
     register,
     handleSubmit,
@@ -70,6 +72,7 @@ export default function DrawingPad({ pageId, drawingData }) {
   const { toast } = useToast();
 
   const handleShare = async (value) => {
+    setName(value.name);
     await supabase
       .from("drawings")
       .update({ name: value.name, type: "published" })
@@ -77,6 +80,24 @@ export default function DrawingPad({ pageId, drawingData }) {
     toast({
       description: "Drawing published.",
     });
+  };
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("drawings")
+        .select("name")
+        .eq("drawing_id", pageId);
+      if (data.length === 0) {
+        setName("untitled");
+      } else {
+        setName(data[0].name);
+      }
+    })();
+  }, []);
+
+  const handleSaveName = async () => {
+    await supabase.from("drawings").update({ name }).eq("drawing_id", pageId);
   };
 
   return (
@@ -106,16 +127,33 @@ export default function DrawingPad({ pageId, drawingData }) {
               onClick={() => {
                 router.push("/app/drawings");
                 router.refresh();
+                handleSaveName();
               }}
               className={cn(
-                "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer"
+                "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer hidden md:block"
               )}
             >
               <ChevronLeft className="w-5 h-5 text-black" />
             </button>
-            untitled
+            <input
+              onChange={(e) => setName(e.target.value)}
+              className="border-none focus:outline-none focus:outline-0 hidden md:inline-block"
+              value={name}
+            />
           </p>
           <div className="flex  w-fit gap-5 pr-5 py-1 ">
+            <button
+              onClick={() => {
+                router.push("/app/drawings");
+                router.refresh();
+                handleSaveName();
+              }}
+              className={cn(
+                "p-1 transition-colors hover:bg-gray-200 rounded-md cursor-pointer md:hidden"
+              )}
+            >
+              <ChevronLeft className="w-5 h-5 text-black" />
+            </button>
             <button
               onClick={() => setEvent("GRAB")}
               className={cn(
@@ -164,6 +202,7 @@ export default function DrawingPad({ pageId, drawingData }) {
                         type="text"
                         id="drawing-name"
                         placeholder="Drawing name"
+                        defaultValue={name}
                       />
                       {errors?.name?.message && (
                         <p className="text-sm text-red-500">
