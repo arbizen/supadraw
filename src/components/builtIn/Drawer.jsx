@@ -45,16 +45,11 @@ export default function Drawer({ getPreview, drawingData, ...props }) {
         type: "draft",
       };
       const { error } = await supabase.from("drawings").insert(drawingData);
-      if (error) {
-        console.log(`SOMETHING WENT WRONG WHILE SAVING THE DRAWING!`, error);
-      }
-      console.log("added");
     } else {
       await supabase
         .from("drawings")
         .update({ preview_data: generatePreview() })
         .eq("drawing_id", props.pageId);
-      console.log("updated");
     }
   }
 

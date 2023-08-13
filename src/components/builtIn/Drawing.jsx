@@ -53,7 +53,6 @@ export default function Drawing({ data }) {
     const { error } = await supabase.from("bookmarks").insert({
       drawing_id: id,
     });
-    console.log(error);
     toast({
       description: "Added to bookmark.",
     });

@@ -53,7 +53,6 @@ export default function DrawingPad({ pageId, drawingData }) {
 
   useEffect(() => {
     if (containerRef.current) {
-      console.log(containerRef.current.offsetHeight);
       setSize({
         width: containerRef.current.offsetWidth,
         height: containerRef.current.offsetHeight,

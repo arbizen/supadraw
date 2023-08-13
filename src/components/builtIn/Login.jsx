@@ -59,7 +59,6 @@ export function Login() {
     }
     setInfo("Please check your email to confirm.");
     setIsloading(false);
-    console.log(data, error);
   };
 
   const handleLogin = async ({ email, password }) => {
@@ -68,7 +67,6 @@ export function Login() {
       email,
       password,
     });
-    console.log(data, error?.message);
     if (error && error.status === 400) {
       setErrorMessage(error?.message);
       setIsloading(false);

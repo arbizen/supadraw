@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 export default function SidebarItems({ items }) {
   const pathname = usePathname();
   const router = useRouter();
-  console.log();
   return (
     <div className="border-t border-b p-4 py-6 space-y-2">
       {items &&

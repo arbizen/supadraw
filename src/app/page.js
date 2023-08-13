@@ -38,9 +38,6 @@ export default function Home() {
           <Link href="/login">
             <Button>Start drawing</Button>
           </Link>
-          <Link href="#">
-            <Button variant="outline">Features</Button>
-          </Link>
         </div>
         <div className="mt-6 flex items-center gap-2">
           <h3 className="text-lg font-bold leading-7 tracking-tight">
