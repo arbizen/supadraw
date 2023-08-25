@@ -35,6 +35,7 @@ export default function Drawing({ data }) {
   const previewData = data?.preview_data || "/images/doll-sketch.jpg";
   const id = data?.id;
   const drawing_id = data?.drawing_id;
+  const whiteboard_id = data?.whiteboard_id;
   const type = data?.type;
   const created_at = data?.created_at;
   const supabase = createClientComponentClient();
@@ -78,7 +79,14 @@ export default function Drawing({ data }) {
   return (
     <Card className="w-full md:min-w-[280px]">
       <CardContent className="space-y-3 flex flex-col">
-        <Link href={`/pad/${drawing_id}`} className="flex justify-center mt-4">
+        <Link
+          href={
+            whiteboard_id
+              ? `/whiteboard/${whiteboard_id}`
+              : `/pad/${drawing_id}`
+          }
+          className="flex justify-center mt-4"
+        >
           <Image
             src={previewData}
             alt=""
